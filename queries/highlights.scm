@@ -1,3 +1,9 @@
+; Identifiers
+
+(type_identifier) @type
+(field_identifier) @property
+(identifier) @variable
+
 ; Function calls
 
 (call_expression
@@ -5,7 +11,7 @@
 
 (call_expression
   function: (identifier) @function.builtin
-  (#match? @function.builtin "^(append|cap|close|complex|copy|delete|imag|len|make|new|panic|print|println|real|recover)$"))
+  (#match? @function.builtin "^(append|cap|close|complex|copy|delete|imag|len|make|new|panic|print|println|real|recover|acc)$"))
 
 (call_expression
   function: (selector_expression
@@ -19,11 +25,10 @@
 (method_declaration
   name: (field_identifier) @function.method)
 
-; Identifiers
 
-(type_identifier) @type
-(field_identifier) @property
-(identifier) @variable
+(fpredicate_decl
+  name: (identifier) @function)
+
 
 ; Operators
 
@@ -65,6 +70,8 @@
   "|="
   "||"
   "~"
+  "--*"
+  "==>"
 ] @operator
 
 ; Keywords
@@ -99,6 +106,19 @@
   "requires"
   "preserves"
   "invariant"
+  "decreases"
+  "subset"
+  "in"
+  "assume"
+  "assert"
+  "inhale"
+  "exhale"
+  "fold"
+  "unfold"
+  "forall"
+  "exists"
+  "pred"
+  "implements"
 ] @keyword
 
 ; Literals

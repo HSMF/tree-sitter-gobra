@@ -123,6 +123,8 @@ module.exports = grammar({
     [$._simple_type, $._expression],
     [$._simple_type, $.generic_type, $._expression],
     [$.qualified_type, $._expression],
+    [$.qualified_type, $._expression, $._simple_type],
+    [$.qualified_type, $._simple_type],
     [$.generic_type, $._simple_type],
     [$.parameter_declaration, $._simple_type],
     [$.type_parameter_declaration, $._simple_type, $._expression],
@@ -195,6 +197,7 @@ module.exports = grammar({
         $.function_declaration,
         $.method_declaration,
         $.import_declaration,
+        $.ghost_member,
       ),
 
     package_clause: ($) => seq("package", $._package_identifier),
@@ -227,6 +230,55 @@ module.exports = grammar({
           ),
         ),
         ")",
+      ),
+
+    ghost_member: ($) =>
+      choice(
+        $.implementation_proof,
+        $.fpredicate_decl,
+        $.mpredicate_decl,
+        // TODO $.explicit_ghost_member,
+      ),
+
+    implementation_proof: ($) =>
+      seq(
+        $._type,
+        "implements",
+        $._type,
+        optional($._implementation_proof_body),
+      ),
+    _implementation_proof_body: ($) =>
+      seq(
+        "{",
+        repeat(seq($.implementation_proof_predicate_alias, terminator)),
+        // TODO: repeat(seq($.method_implementation_proof, terminator)),
+        "}",
+      ),
+    implementation_proof_predicate_alias: ($) =>
+      seq(
+        "pred",
+        $.identifier,
+        ":=",
+        choice($._expression, seq($._type, ".", $.identifier)),
+      ),
+
+    fpredicate_decl: ($) =>
+      seq(
+        "pred",
+        field("name", $.identifier),
+        field("parameters", $.parameter_list),
+        optional($.predicate_body),
+      ),
+
+    predicate_body: ($) => seq("{", $._expression, terminator, "}"),
+
+    mpredicate_decl: ($) =>
+      seq(
+        "pred",
+        field("receiver", $.parameter_list),
+        field("name", $.identifier),
+        field("parameters", $.parameter_list),
+        optional($.predicate_body),
       ),
 
     _declaration: ($) =>
@@ -532,9 +584,20 @@ module.exports = grammar({
         $.goto_statement,
         $.block,
         $.empty_statement,
+        $.ghost_statement,
       ),
 
     empty_statement: (_) => ";",
+
+    _proof_statement: ($) =>
+      seq(choice("assume", "assert", "inhale", "exhale"), $._expression),
+    ghost_statement: ($) =>
+      choice(
+        seq("ghost", $._statement),
+        seq(choice("fold", "unfold"), $._predicate_access),
+        $._proof_statement,
+        // TODO: match statement
+      ),
 
     _simple_statement: ($) =>
       choice(
@@ -749,6 +812,11 @@ module.exports = grammar({
         optional($.triggers),
         $._expression,
       ),
+
+    unfolding: ($) =>
+      seq("unfolding", $._predicate_access, "in", $._expression),
+    _predicate_access: ($) => $._expression,
+
     let_expression: ($) => seq("let", $.short_var_declaration, "in"),
     bound_variables: ($) =>
       seq(commaSep1($.bound_variable_declaration), optional(",")),
