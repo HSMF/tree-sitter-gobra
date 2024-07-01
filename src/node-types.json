@@ -102,6 +102,10 @@
       {
         "type": "unary_expression",
         "named": true
+      },
+      {
+        "type": "unfolding",
+        "named": true
       }
     ]
   },
@@ -2961,6 +2965,21 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "unfolding",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "_expression",
+          "named": true
+        }
+      ]
     }
   },
   {

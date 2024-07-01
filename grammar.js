@@ -800,6 +800,7 @@ module.exports = grammar({
         $.iota,
         $.parenthesized_expression,
         $.quantification,
+        $.unfolding,
         $.let_expression,
       ),
 
@@ -813,8 +814,7 @@ module.exports = grammar({
         $._expression,
       ),
 
-    unfolding: ($) =>
-      seq("unfolding", $._predicate_access, "in", $._expression),
+    unfolding: ($) => seq("unfolding", $._expression, "in", $._expression),
     _predicate_access: ($) => $._expression,
 
     let_expression: ($) => seq("let", $.short_var_declaration, "in"),

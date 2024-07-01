@@ -115,10 +115,12 @@
   "exhale"
   "fold"
   "unfold"
+  "unfolding"
   "forall"
   "exists"
   "pred"
   "implements"
+  "pure"
 ] @keyword
 
 ; Literals

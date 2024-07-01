@@ -4094,6 +4094,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "unfolding"
+        },
+        {
+          "type": "SYMBOL",
           "name": "let_expression"
         }
       ]
@@ -4153,7 +4157,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "_predicate_access"
+          "name": "_expression"
         },
         {
           "type": "STRING",
