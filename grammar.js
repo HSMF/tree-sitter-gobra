@@ -136,6 +136,7 @@ module.exports = grammar({
       $._expression,
     ],
     [$._spec_statement, $.loop_spec],
+    [$.package_clause, $._expression],
   ],
 
   supertypes: ($) => [
@@ -198,6 +199,8 @@ module.exports = grammar({
         $.method_declaration,
         $.import_declaration,
         $.ghost_member,
+        // add the specification as a top level declaration for //@ comments
+        $._specification,
       ),
 
     package_clause: ($) => seq("package", $._package_identifier),
@@ -237,7 +240,17 @@ module.exports = grammar({
         $.implementation_proof,
         $.fpredicate_decl,
         $.mpredicate_decl,
-        // TODO $.explicit_ghost_member,
+        $._explicit_ghost_member,
+      ),
+
+    _explicit_ghost_member: ($) =>
+      seq(
+        "ghost",
+        choice(
+          $.function_declaration,
+          $.method_declaration,
+          // TODO: declaration
+        ),
       ),
 
     implementation_proof: ($) =>
@@ -585,6 +598,8 @@ module.exports = grammar({
         $.block,
         $.empty_statement,
         $.ghost_statement,
+        $.package_statement,
+        $.apply_statement,
       ),
 
     empty_statement: (_) => ";",
@@ -598,6 +613,9 @@ module.exports = grammar({
         $._proof_statement,
         // TODO: match statement
       ),
+
+    package_statement: ($) => seq("package", $._expression, optional($.block)),
+    apply_statement: ($) => seq("apply", $._expression),
 
     _simple_statement: ($) =>
       choice(
@@ -708,6 +726,7 @@ module.exports = grammar({
         optional(seq(field("left", $.expression_list), choice("=", ":="))),
         "range",
         field("right", $._expression),
+        optional(seq("with", field("range_var", $.identifier))),
       ),
 
     expression_switch_statement: ($) =>
@@ -818,6 +837,47 @@ module.exports = grammar({
     _predicate_access: ($) => $._expression,
 
     let_expression: ($) => seq("let", $.short_var_declaration, "in"),
+
+    _ghost_primary_expr: ($) =>
+      choice(
+        $.match_expression,
+
+        // TODO range
+        // | access
+        // | typeOf
+        // | typeExpr
+        // | isComparable
+        // | old
+        // | before
+        // | sConversion
+        // | optionNone | optionSome | optionGet
+        // | permission
+      ),
+
+    match_expression: ($) =>
+      seq(
+        "match",
+        $._expression,
+        "{",
+        repeat(seq($.match_expression_clause, terminator)),
+        "}",
+      ),
+
+    match_expression_clause: ($) => seq($.match_case, ":", $._expression),
+    match_case: ($) => choice("default", seq("case", $.match_pattern)),
+    match_pattern: ($) =>
+      choice(
+        seq("?", $.identifier),
+        seq(
+          $._simple_type,
+          "{",
+          optional(seq($.match_pattern_list, optional(","))),
+          "}",
+        ),
+        $._expression,
+      ),
+    match_pattern_list: ($) => commaSep1($.match_pattern),
+
     bound_variables: ($) =>
       seq(commaSep1($.bound_variable_declaration), optional(",")),
     bound_variable_declaration: ($) =>
