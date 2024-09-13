@@ -135,50 +135,71 @@
       ]
     },
     "_specification": {
-      "type": "REPEAT1",
-      "content": {
-        "type": "SEQ",
-        "members": [
-          {
-            "type": "CHOICE",
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "REPEAT1",
+          "content": {
+            "type": "SEQ",
             "members": [
               {
-                "type": "SYMBOL",
-                "name": "_spec_statement"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "_spec_statement"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "opaque"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "pure"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "trusted"
+                  }
+                ]
               },
               {
-                "type": "STRING",
-                "value": "opaque"
-              },
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "\n"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ";"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "\u0000"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "PREC_RIGHT",
+          "value": 0,
+          "content": {
+            "type": "CHOICE",
+            "members": [
               {
                 "type": "STRING",
                 "value": "pure"
               },
               {
-                "type": "STRING",
-                "value": "trusted"
-              }
-            ]
-          },
-          {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "\n"
-              },
-              {
-                "type": "STRING",
-                "value": ";"
-              },
-              {
-                "type": "STRING",
-                "value": "\u0000"
+                "type": "BLANK"
               }
             ]
           }
-        ]
-      }
+        }
+      ]
     },
     "_spec_statement": {
       "type": "CHOICE",

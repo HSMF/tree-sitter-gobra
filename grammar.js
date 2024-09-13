@@ -166,8 +166,14 @@ module.exports = grammar({
     _import_pre: ($) => seq("IMPORT_PRE", $._expression),
 
     _specification: ($) =>
-      repeat1(
-        seq(choice($._spec_statement, "opaque", "pure", "trusted"), terminator),
+      seq(
+        repeat1(
+          seq(
+            choice($._spec_statement, "opaque", "pure", "trusted"),
+            terminator,
+          ),
+        ),
+        prec.right(optional("pure")),
       ),
 
     _spec_statement: ($) =>
