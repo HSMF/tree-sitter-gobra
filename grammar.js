@@ -681,7 +681,15 @@ module.exports = grammar({
 
     go_statement: ($) => seq("go", $._expression),
 
-    defer_statement: ($) => seq("defer", $._expression),
+    defer_statement: ($) =>
+      choice(
+        seq("defer", $._expression),
+        seq(
+          "defer",
+          field("fold_statement", choice("fold", "unfold")),
+          $._predicate_access,
+        ),
+      ),
 
     if_statement: ($) =>
       seq(

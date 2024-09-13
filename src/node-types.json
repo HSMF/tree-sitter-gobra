@@ -923,7 +923,22 @@
   {
     "type": "defer_statement",
     "named": true,
-    "fields": {},
+    "fields": {
+      "fold_statement": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "fold",
+            "named": false
+          },
+          {
+            "type": "unfold",
+            "named": false
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": false,
       "required": true,

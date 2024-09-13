@@ -3319,15 +3319,50 @@
       ]
     },
     "defer_statement": {
-      "type": "SEQ",
+      "type": "CHOICE",
       "members": [
         {
-          "type": "STRING",
-          "value": "defer"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "defer"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_expression"
+            }
+          ]
         },
         {
-          "type": "SYMBOL",
-          "name": "_expression"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "defer"
+            },
+            {
+              "type": "FIELD",
+              "name": "fold_statement",
+              "content": {
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "STRING",
+                    "value": "fold"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": "unfold"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "SYMBOL",
+              "name": "_predicate_access"
+            }
+          ]
         }
       ]
     },
