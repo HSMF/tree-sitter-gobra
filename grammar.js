@@ -157,6 +157,8 @@ module.exports = grammar({
             // parsing of partial code snippets in documentation (see #63).
             seq($._statement, terminator),
             seq($._top_level_declaration, terminator),
+            // we accept the following constructs at top-level to enable highlighting inline comments in .go files
+            seq($._range_with, terminator),
           ),
         ),
         optional($._top_level_declaration),
@@ -740,8 +742,9 @@ module.exports = grammar({
         optional(seq(field("left", $.expression_list), choice("=", ":="))),
         "range",
         field("right", $._expression),
-        optional(seq("with", field("range_var", $.identifier))),
+        optional($._range_with),
       ),
+    _range_with: ($) => seq("with", field("range_var", $.identifier)),
 
     expression_switch_statement: ($) =>
       seq(

@@ -2624,7 +2624,18 @@
   {
     "type": "source_file",
     "named": true,
-    "fields": {},
+    "fields": {
+      "range_var": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": false,
