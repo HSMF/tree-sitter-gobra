@@ -120,23 +120,23 @@ module.exports = grammar({
   word: ($) => $.identifier,
 
   conflicts: ($) => [
-    [$._simple_type, $._expression],
-    [$._simple_type, $.generic_type, $._expression],
-    [$.qualified_type, $._expression],
-    [$.qualified_type, $._expression, $._simple_type],
+    [$._simple_type, $._primary_expr],
+    [$._simple_type, $.generic_type, $._primary_expr],
+    [$.qualified_type, $._primary_expr],
+    [$.qualified_type, $._primary_expr, $._simple_type],
     [$.qualified_type, $._simple_type],
     [$.generic_type, $._simple_type],
     [$.parameter_declaration, $._simple_type],
-    [$.type_parameter_declaration, $._simple_type, $._expression],
-    [$.type_parameter_declaration, $._expression],
+    [$.type_parameter_declaration, $._simple_type, $._primary_expr],
+    [$.type_parameter_declaration, $._primary_expr],
     [
       $.type_parameter_declaration,
       $._simple_type,
       $.generic_type,
-      $._expression,
+      $._primary_expr,
     ],
     [$._spec_statement, $.loop_spec],
-    [$.package_clause, $._expression],
+    [$.package_clause, $._primary_expr],
   ],
 
   supertypes: ($) => [
@@ -402,7 +402,11 @@ module.exports = grammar({
 
     parameter_declaration: ($) =>
       prec.left(
-        seq(commaSep(field("name", $.identifier)), field("type", $._type)),
+        seq(
+          optional("ghost"),
+          commaSep(field("name", $.identifier)),
+          field("type", $._type),
+        ),
       ),
 
     variadic_parameter_declaration: ($) =>
@@ -832,19 +836,8 @@ module.exports = grammar({
         optional($._statement_list),
       ),
 
-    _expression: ($) =>
+    _primary_expr: ($) =>
       choice(
-        $.unary_expression,
-        $.binary_expression,
-        $.selector_expression,
-        $.index_expression,
-        $.slice_expression,
-        $.call_expression,
-        $.type_assertion_expression,
-        $.type_conversion_expression,
-        $.type_instantiation_expression,
-        $.identifier,
-        alias(choice("new", "make"), $.identifier),
         $.composite_literal,
         $.func_literal,
         $._string_literal,
@@ -852,6 +845,22 @@ module.exports = grammar({
         $.float_literal,
         $.imaginary_literal,
         $.rune_literal,
+        $.identifier,
+        alias(choice("new", "make"), $.identifier),
+        $.call_expression,
+        $.selector_expression,
+      ),
+
+    _expression: ($) =>
+      choice(
+        $._primary_expr,
+        $.unary_expression,
+        $.binary_expression,
+        $.index_expression,
+        $.slice_expression,
+        $.type_assertion_expression,
+        $.type_conversion_expression,
+        $.type_instantiation_expression,
         $.nil,
         $.true,
         $.false,
@@ -872,8 +881,12 @@ module.exports = grammar({
         $._expression,
       ),
 
-    unfolding: ($) => seq("unfolding", $._expression, "in", $._expression),
-    _predicate_access: ($) => $._expression,
+    unfolding: ($) =>
+      prec(
+        PREC.unfolding,
+        seq("unfolding", field("predicate", $._primary_expr), "in", $._expression),
+      ),
+    _predicate_access: ($) => $._primary_expr,
 
     let_expression: ($) => seq("let", $.short_var_declaration, "in"),
 

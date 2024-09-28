@@ -3217,9 +3217,60 @@
   {
     "type": "unfolding",
     "named": true,
-    "fields": {},
+    "fields": {
+      "predicate": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "call_expression",
+            "named": true
+          },
+          {
+            "type": "composite_literal",
+            "named": true
+          },
+          {
+            "type": "float_literal",
+            "named": true
+          },
+          {
+            "type": "func_literal",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          },
+          {
+            "type": "imaginary_literal",
+            "named": true
+          },
+          {
+            "type": "int_literal",
+            "named": true
+          },
+          {
+            "type": "interpreted_string_literal",
+            "named": true
+          },
+          {
+            "type": "raw_string_literal",
+            "named": true
+          },
+          {
+            "type": "rune_literal",
+            "named": true
+          },
+          {
+            "type": "selector_expression",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {

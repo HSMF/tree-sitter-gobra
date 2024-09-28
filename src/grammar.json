@@ -1580,6 +1580,18 @@
             "type": "CHOICE",
             "members": [
               {
+                "type": "STRING",
+                "value": "ghost"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
                 "type": "SEQ",
                 "members": [
                   {
@@ -4356,67 +4368,9 @@
         }
       ]
     },
-    "_expression": {
+    "_primary_expr": {
       "type": "CHOICE",
       "members": [
-        {
-          "type": "SYMBOL",
-          "name": "unary_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "binary_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "selector_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "index_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "slice_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "call_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "type_assertion_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "type_conversion_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "type_instantiation_expression"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "identifier"
-        },
-        {
-          "type": "ALIAS",
-          "content": {
-            "type": "CHOICE",
-            "members": [
-              {
-                "type": "STRING",
-                "value": "new"
-              },
-              {
-                "type": "STRING",
-                "value": "make"
-              }
-            ]
-          },
-          "named": true,
-          "value": "identifier"
-        },
         {
           "type": "SYMBOL",
           "name": "composite_literal"
@@ -4444,6 +4398,73 @@
         {
           "type": "SYMBOL",
           "name": "rune_literal"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "STRING",
+                "value": "new"
+              },
+              {
+                "type": "STRING",
+                "value": "make"
+              }
+            ]
+          },
+          "named": true,
+          "value": "identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "call_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "selector_expression"
+        }
+      ]
+    },
+    "_expression": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "_primary_expr"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "unary_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "binary_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "index_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "slice_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "type_assertion_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "type_conversion_expression"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "type_instantiation_expression"
         },
         {
           "type": "SYMBOL",
@@ -4526,29 +4547,37 @@
       ]
     },
     "unfolding": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "unfolding"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_expression"
-        },
-        {
-          "type": "STRING",
-          "value": "in"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "_expression"
-        }
-      ]
+      "type": "PREC",
+      "value": 1,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "unfolding"
+          },
+          {
+            "type": "FIELD",
+            "name": "predicate",
+            "content": {
+              "type": "SYMBOL",
+              "name": "_primary_expr"
+            }
+          },
+          {
+            "type": "STRING",
+            "value": "in"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "_expression"
+          }
+        ]
+      }
     },
     "_predicate_access": {
       "type": "SYMBOL",
-      "name": "_expression"
+      "name": "_primary_expr"
     },
     "let_expression": {
       "type": "SEQ",
@@ -8627,20 +8656,20 @@
   "conflicts": [
     [
       "_simple_type",
-      "_expression"
+      "_primary_expr"
     ],
     [
       "_simple_type",
       "generic_type",
-      "_expression"
+      "_primary_expr"
     ],
     [
       "qualified_type",
-      "_expression"
+      "_primary_expr"
     ],
     [
       "qualified_type",
-      "_expression",
+      "_primary_expr",
       "_simple_type"
     ],
     [
@@ -8658,17 +8687,17 @@
     [
       "type_parameter_declaration",
       "_simple_type",
-      "_expression"
+      "_primary_expr"
     ],
     [
       "type_parameter_declaration",
-      "_expression"
+      "_primary_expr"
     ],
     [
       "type_parameter_declaration",
       "_simple_type",
       "generic_type",
-      "_expression"
+      "_primary_expr"
     ],
     [
       "_spec_statement",
@@ -8676,7 +8705,7 @@
     ],
     [
       "package_clause",
-      "_expression"
+      "_primary_expr"
     ]
   ],
   "precedences": [],
