@@ -206,6 +206,10 @@
         "named": true
       },
       {
+        "type": "auxiliary_statement",
+        "named": true
+      },
+      {
         "type": "block",
         "named": true
       },
@@ -462,6 +466,37 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "auxiliary_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "outline_statement",
+          "named": true
+        },
+        {
+          "type": "post_condition",
+          "named": true
+        },
+        {
+          "type": "pre_condition",
+          "named": true
+        },
+        {
+          "type": "preserves_condition",
+          "named": true
+        },
+        {
+          "type": "termination_condition",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -1456,7 +1491,7 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
@@ -2153,6 +2188,21 @@
     }
   },
   {
+    "type": "outline_statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "package_clause",
     "named": true,
     "fields": {},
@@ -2662,6 +2712,10 @@
         },
         {
           "type": "method_declaration",
+          "named": true
+        },
+        {
+          "type": "outline_statement",
           "named": true
         },
         {
@@ -3673,6 +3727,10 @@
   },
   {
     "type": "opaque",
+    "named": false
+  },
+  {
+    "type": "outline",
     "named": false
   },
   {

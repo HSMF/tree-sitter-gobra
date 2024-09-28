@@ -159,6 +159,7 @@ module.exports = grammar({
             seq($._top_level_declaration, terminator),
             // we accept the following constructs at top-level to enable highlighting inline comments in .go files
             seq($._range_with, terminator),
+            seq(",", $._expression, terminator),
           ),
         ),
         optional($._top_level_declaration),
@@ -209,6 +210,7 @@ module.exports = grammar({
         $.ghost_member,
         // add the specification as a top level declaration for //@ comments
         $._specification,
+        $.outline_statement,
       ),
 
     package_clause: ($) => seq("package", $._package_identifier),
@@ -589,6 +591,7 @@ module.exports = grammar({
     _statement: ($) =>
       choice(
         $._declaration,
+        $.auxiliary_statement,
         $._simple_statement,
         $.return_statement,
         $.go_statement,
@@ -614,12 +617,26 @@ module.exports = grammar({
 
     _proof_statement: ($) =>
       seq(choice("assume", "assert", "inhale", "exhale"), $._expression),
+
     ghost_statement: ($) =>
       choice(
         seq("ghost", $._statement),
         seq(choice("fold", "unfold"), $._predicate_access),
         $._proof_statement,
+        $._match_statement,
         // TODO: match statement
+      ),
+
+    _match_statement: ($) =>
+      seq("match", $._expression, "{", repeat($._match_statement_clause), "}"),
+    _match_statement_clause: ($) =>
+      seq($._match_case, ":", optional($._statement_list)),
+    _match_case: ($) => choice(seq("case", $._match_pattern), "default"),
+    _match_pattern: ($) =>
+      choice(
+        seq("?", $.identifier),
+        // TODO: match pattern composite
+        $._expression,
       ),
 
     package_statement: ($) => seq("package", $._expression, optional($.block)),
@@ -656,6 +673,11 @@ module.exports = grammar({
         field("operator", choice(...assignmentOperators)),
         field("right", $.expression_list),
       ),
+
+    auxiliary_statement: ($) => choice($._statement_with_spec),
+    _statement_with_spec: ($) => seq($._specification, $.outline_statement),
+    outline_statement: ($) =>
+      seq("outline", "(", optional($._statement_list), ")"),
 
     short_var_declaration: ($) =>
       seq(
