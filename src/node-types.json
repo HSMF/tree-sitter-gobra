@@ -84,6 +84,10 @@
         "named": true
       },
       {
+        "type": "ternary_expression",
+        "named": true
+      },
+      {
         "type": "true",
         "named": true
       },
@@ -599,10 +603,6 @@
           },
           {
             "type": ">>",
-            "named": false
-          },
-          {
-            "type": "?",
             "named": false
           },
           {
@@ -2810,6 +2810,42 @@
     }
   },
   {
+    "type": "ternary_expression",
+    "named": true,
+    "fields": {
+      "condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "_expression",
+            "named": true
+          }
+        ]
+      },
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "_expression",
+            "named": true
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "_expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "trigger",
     "named": true,
     "fields": {},
@@ -3818,6 +3854,10 @@
   },
   {
     "type": "return",
+    "named": false
+  },
+  {
+    "type": "reveal",
     "named": false
   },
   {

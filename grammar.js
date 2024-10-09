@@ -137,6 +137,7 @@ module.exports = grammar({
     ],
     [$._spec_statement, $.loop_spec],
     [$.package_clause, $._primary_expr],
+    [$.call_expression],
   ],
 
   supertypes: ($) => [
@@ -848,6 +849,7 @@ module.exports = grammar({
         $.identifier,
         alias(choice("new", "make"), $.identifier),
         $.call_expression,
+        $.call_expression,
         $.selector_expression,
       ),
 
@@ -856,6 +858,7 @@ module.exports = grammar({
         $._primary_expr,
         $.unary_expression,
         $.binary_expression,
+        $.ternary_expression,
         $.index_expression,
         $.slice_expression,
         $.type_assertion_expression,
@@ -884,7 +887,12 @@ module.exports = grammar({
     unfolding: ($) =>
       prec(
         PREC.unfolding,
-        seq("unfolding", field("predicate", $._primary_expr), "in", $._expression),
+        seq(
+          "unfolding",
+          field("predicate", $._primary_expr),
+          "in",
+          $._expression,
+        ),
       ),
     _predicate_access: ($) => $._primary_expr,
 
@@ -948,6 +956,12 @@ module.exports = grammar({
             field("arguments", alias($.special_argument_list, $.argument_list)),
           ),
           seq(
+            field("function", $._expression),
+            field("type_arguments", optional($.type_arguments)),
+            field("arguments", $.argument_list),
+          ),
+          seq(
+            "reveal",
             field("function", $._expression),
             field("type_arguments", optional($.type_arguments)),
             field("arguments", $.argument_list),
@@ -1128,10 +1142,7 @@ module.exports = grammar({
         [PREC.and, "&&"],
         [PREC.or, "||"],
       ];
-      const rightTable = [
-        [PREC.impl, "==>"],
-        [PREC.qmark, "?"],
-      ];
+      const rightTable = [[PREC.impl, "==>"]];
 
       return choice(
         ...table.map(([precedence, operator]) =>
@@ -1160,6 +1171,18 @@ module.exports = grammar({
         ),
       );
     },
+
+    ternary_expression: ($) =>
+      prec.right(
+        PREC.qmark,
+        seq(
+          field("condition", $._expression),
+          "?",
+          field("left", $._expression),
+          ":",
+          field("right", $._expression),
+        ),
+      ),
 
     qualified_type: ($) =>
       seq(
