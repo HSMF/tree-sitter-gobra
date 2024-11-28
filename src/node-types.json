@@ -148,6 +148,10 @@
     "named": true,
     "subtypes": [
       {
+        "type": "adt_type",
+        "named": true
+      },
+      {
         "type": "array_type",
         "named": true
       },
@@ -308,6 +312,66 @@
         "named": true
       }
     ]
+  },
+  {
+    "type": "adt_clause",
+    "named": true,
+    "fields": {
+      "variant": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "field_declaration_list",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "adt_clauses",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "adt_clause",
+          "named": true
+        },
+        {
+          "type": "field_declaration",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "adt_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "adt_clauses",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "apply_statement",
@@ -3622,6 +3686,10 @@
   },
   {
     "type": "^=",
+    "named": false
+  },
+  {
+    "type": "adt",
     "named": false
   },
   {

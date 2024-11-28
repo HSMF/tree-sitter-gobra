@@ -452,6 +452,7 @@ module.exports = grammar({
         $.qualified_type,
         $.pointer_type,
         $.struct_type,
+        $.adt_type,
         $.interface_type,
         $.array_type,
         $.slice_type,
@@ -494,6 +495,23 @@ module.exports = grammar({
     slice_type: ($) => prec.right(seq("[", "]", field("element", $._type))),
 
     struct_type: ($) => seq("struct", $.field_declaration_list),
+
+    adt_type: ($) => seq("adt", $.adt_clauses),
+
+    adt_clauses: ($) =>
+      seq(
+        "{",
+        optional(
+          seq(
+            $.adt_clause,
+            repeat(seq(terminator, $.field_declaration)),
+            optional(terminator),
+          ),
+        ),
+        "}",
+      ),
+    adt_clause: ($) =>
+      seq(field("variant", $.identifier), $.field_declaration_list),
 
     negated_type: ($) => prec.left(seq("~", $._type)),
 
